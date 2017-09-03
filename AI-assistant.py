@@ -12,7 +12,7 @@ from google import google
 hour = 100
 minute = 100
 
-Interface = "Voice"
+Interface = str(raw_input())
 
 devices = AudioUtilities.GetSpeakers()
 interface = devices.Activate(
