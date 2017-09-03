@@ -4,6 +4,8 @@ A python AI assistant. Uses SpeechRecognition module.
 
 To Make it work you will need to excecute these commands in cmd:
 
+pip install SpeechRecognition
+
 pip install pypiwin32
 
 pip install pyttsx
