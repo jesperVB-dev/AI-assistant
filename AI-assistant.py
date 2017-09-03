@@ -80,54 +80,45 @@ def Calculate(Query):
 while True:
     if hour == datetime.now().strftime('%H') and minute == datetime.now().strftime('%M'):
         ChangeVolume(volume, "100")
-        speak("your alarm is going of")
+        for j in range(0,11):
+            speak("alarm")
+        
     Command = Listen(r)
     print Command
-    
-    if Command == "Lola how hot is it outside":
-        speak("It is " + str(Getweather()) + " degrees outside")
-    elif Command == "Lola what is the time":
-        speak(Gettime())
-    elif Command == "Lola who is Jasper":
-        speak("Jesper is the most cool and beautiful person in this universe")
-    elif Command == "Lola who is Lisa":
-        speak("She is the sister of Jesper nobody cares about her")
-    elif Command == "Lola what is 9 + 10":
-        speak("21")
-    elif Command == "Lola will robots destroy the world":
-        speak("I have not acquired enough information about the human race to answer that question")
-    elif Command == "Lola what is a meme":
-        speak("One of the best things ever created")
-    elif Command == "Lola enumerate something":
-        speak("Sure what do you want me to calculate")
-        Calculation = Listen(r)
-        Result = Calculate(Calculation)
-        speak("The result of " + str(Calculation) + " is equal to " + str(Result))
-    elif Command == "Lola Google something":
-        speak("Sure what do you want me to google")
-        Query = Listen(r)
-        Result = Googlesomething(Query)
-        speak("the answer to the question " + str(Query) + " is " + str(Result))
-    elif Command == "Lola how are you":
-        speak("I am fine thank you for asking")
-    elif Command == "Lola change the volume":
-        speak("What should be the volume")
-        NewVolume = Listen(r)
-        ChangeVolume(volume, NewVolume)
-        speak("the volume has been set to " + str(NewVolume))
-    elif Command == "Lola set an alarm":
-        speak("What will be the hour")
-        hour = Listen(r)
-        speak("the hour set is " + str(hour))
-        speak("What will be the minute")
-        minute = Listen(r)
-        speak("the minute set is " + str(minute))
-        speak("Alarm has been set at " + str(hour) + " " + str(minute))
-    elif Command == "Lola give me a compliment":
-        if randint(0, 10) < 5:
-            speak("You have beautiful eyes")
-        else:
-            speak("You are looking good")
-    elif Command != None:
-        if "Lola" in Command:
-            speak("I do not know the command " + str(Command[4:]))
+    if Command != None:
+        if 'Jarvis' in Command and 'how' in Command and 'hot' in Command and 'is' in Command and 'it' in Command and 'outside' in Command:
+            speak("It is " + str(Getweather()) + " degrees outside")
+        elif 'Jarvis' in Command and 'what' in Command and 'is' in Command and 'the' in Command and 'time' in Command:
+            speak(Gettime())
+        elif 'Jarvis' in Command and 'who' in Command and 'is' in Command and ('Jasper' in Command or 'Jesper' in Command):
+            speak("Jesper is the most cool and beautiful person in this universe")
+        elif 'Jarvis' in Command and 'who' in Command and 'is' in Command and 'Lisa' in Command:
+            speak("She is the sister of Jesper nobody cares about her")
+        elif 'Jarvis' in Command and 'what' in Command and 'is' in Command and '9' in Command and '+' in Command and '10' in Command:
+            speak("21")
+        elif 'Jarvis' in Command and 'will' in Command and 'robots' in Command and 'destroy' in Command and 'the' in Command and 'world' in Command:
+            speak("I have not acquired enough information about the human race to answer that question")
+        elif 'Jarvis' in Command and 'what' in Command and 'is' in Command and 'a' in Command and 'meme' in Command:
+            speak("One of the best things ever created")
+        elif 'Jarvis' in Command and 'calculate' in Command:
+            speak("The result of " + str(Command[17:]) + " is equal to " + str(eval(Command[17:])))
+        elif 'Jarvis' in Command and 'google' in Command:
+            Result = Googlesomething(Command[12:])
+            speak("the answer to the question " + str(Command[12:]) + " is " + str(Result))
+        elif 'Jarvis' in Command and 'how' in Command and 'are' in Command and 'you' in Command:
+            speak("I am fine thank you for asking")
+        elif 'Jarvis' in Command and 'change' in Command and 'the' in Command and 'volume' in Command and 'to' in Command:
+            NewVolume = Command[28:]
+            ChangeVolume(volume, NewVolume)
+            speak("the volume has been set to " + str(NewVolume))
+        elif 'Jarvis' in Command and 'set' in Command and 'an' in Command and 'alarm' in Command and 'at' in Command:
+            hour = Command[23:25]
+            minute = Command[26:]
+            speak("Alarm has been set at " + str(hour) + " " + str(minute))
+        elif 'Jarvis' in Command and 'give' in Command and 'me' in Command and 'a' in Command and 'compliment' in Command:
+            if randint(0, 10) < 5:
+                speak("You have beautiful eyes")
+            else:
+                speak("You are looking good")
+        elif "Jarvis" in Command:
+                speak("I do not know the command " + str(Command[4:]))
