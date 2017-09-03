@@ -114,6 +114,12 @@ while True:
         elif 'who' in Command and 'is' in Command and 'Lisa' in Command:
             speak("are you talking to me if yes then please say jarvis in front of the command")
             print("+ are you talking to me if yes then please say jarvis in front of the command")
+        elif 'Jarvis' in Command and 'enable' in Command and 'security' in Command:
+            speak("Security has been enabled")
+            print("+ Security has been enabled")
+        elif 'enable' in Command and 'security' in Command:
+            speak("are you talking to me if yes then please say jarvis in front of the command")
+            print("+ are you talking to me if yes then please say jarvis in front of the command")
         elif 'Jarvis' in Command and 'what' in Command and 'is' in Command and '9' in Command and '+' in Command and '10' in Command:
             speak("21")
             print("+ 21")
@@ -130,6 +136,24 @@ while True:
             speak("One of the best things ever created")
             print("+ One of the best things ever created")
         elif 'what' in Command and 'is' in Command and 'a' in Command and 'meme' in Command:
+            speak("are you talking to me if yes then please say jarvis in front of the command")
+            print("+ are you talking to me if yes then please say jarvis in front of the command")
+        elif 'Jarvis' in Command and 'tell' in Command and 'me' in Command and 'a' in Command and 'joke' in Command:
+            speak("our lifed")
+            print("+ Your life")
+        elif 'tell' in Command and 'me' in Command and 'a' in Command and 'joke' in Command:
+            speak("are you talking to me if yes then please say jarvis in front of the command")
+            print("+ are you talking to me if yes then please say jarvis in front of the command")
+        elif 'Jarvis' in Command and 'turn' in Command and 'on' in Command and 'the ' in Command and 'lights' in Command:
+            speak("I am not able to do that yet")
+            print("+ I am not able to do that yet")
+        elif 'turn' in Command and 'on' in Command and 'the ' in Command and 'lights' in Command:
+            speak("are you talking to me if yes then please say jarvis in front of the command")
+            print("+ are you talking to me if yes then please say jarvis in front of the command")
+        elif 'Jarvis' in Command and 'turn' in Command and 'off' in Command and 'the ' in Command and 'lights' in Command:
+            speak("I am not able to do that yet")
+            print("+ I am not able to do that yet")
+        elif 'turn' in Command and 'off' in Command and 'the ' in Command and 'lights' in Command:
             speak("are you talking to me if yes then please say jarvis in front of the command")
             print("+ are you talking to me if yes then please say jarvis in front of the command")
         elif 'Jarvis' in Command and 'calculate' in Command:
