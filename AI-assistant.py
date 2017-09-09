@@ -15,10 +15,10 @@ Looper = True
 Score = 0
 hour = 100
 minute = 100
-Machine_learning = {"hi": "hello"}
-Command_added = False
+MachineLearning = {}
 
-Interface = str(raw_input("Interface: "))
+#Interface = str(raw_input("Interface: "))
+Interface = "Voice"
 
 devices = AudioUtilities.GetSpeakers()
 interface = devices.Activate(
@@ -85,92 +85,38 @@ def Googlesomething(Query):
 def Calculate(Query):
     return eval(Query)
 
-speak("Ready for action sir")
-print("Ready for action sir")
-
-while True:
+def CheckAlarm():
     if hour == datetime.now().strftime('%H') and minute == datetime.now().strftime('%M'):
         ChangeVolume(volume, "100")
         for j in range(0,11):
             speak("alarm")
+            
+print("Ready for action sir")
+speak("Ready for action sir")
+
+Linenumber = 0
+line_num = 0
+Said = False
+
+while True:
+    CheckAlarm()
+    
     if Interface == "Voice":
         Command = Listen(r)
         print "- " + str(Command)
     else:
         Command = str(raw_input("Command: "))
+        
     if Command != None:
         if 'Jarvis' in Command and 'how' in Command and 'hot' in Command and 'is' in Command and 'it' in Command and 'outside' in Command:
             print("+ It is " + str(Getweather()) + " degrees outside")
             speak("It is " + str(Getweather()) + " degrees outside")
-        elif 'how' in Command and 'hot' in Command and 'is' in Command and 'it' in Command and 'outside' in Command:
-            print("+ are you talking to me if yes then please say jarvis in front of the command")
-            speak("are you talking to me if yes then please say jarvis in front of the command")
         elif 'Jarvis' in Command and 'what' in Command and 'is' in Command and 'the' in Command and 'time' in Command:
             print("+ " + str(Gettime()))
             speak(Gettime())
-        elif 'what' in Command and 'is' in Command and 'the' in Command and 'time' in Command:
-            print("+ are you talking to me if yes then please say jarvis in front of the command")
-            speak("are you talking to me if yes then please say jarvis in front of the command")
-        elif 'Jarvis' in Command and 'who' in Command and 'is' in Command and ('Jasper' in Command or 'jesper' in Command):
-            print("+ Jesper is the most cool and beautiful person in this universe")
-            speak("Jesper is the most cool and beautiful person in this universe")
-        elif 'who' in Command and 'is' in Command and ('Jasper' in Command or 'jesper' in Command):
-            print("+ are you talking to me if yes then please say jarvis in front of the command")
-            speak("are you talking to me if yes then please say jarvis in front of the command")
-        elif 'Jarvis' in Command and 'who' in Command and 'is' in Command and 'Lisa' in Command:
-            print("+ She is the sister of Jesper nobody cares about her")
-            speak("She is the sister of Jesper nobody cares about her")
-        elif 'who' in Command and 'is' in Command and 'Lisa' in Command:
-            print("+ are you talking to me if yes then please say jarvis in front of the command")
-            speak("are you talking to me if yes then please say jarvis in front of the command")
-        elif 'Jarvis' in Command and 'enable' in Command and 'security' in Command:
-            print("+ Security has been enabled")
-            speak("Security has been enabled")
-        elif 'enable' in Command and 'security' in Command:
-            print("+ are you talking to me if yes then please say jarvis in front of the command")
-            speak("are you talking to me if yes then please say jarvis in front of the command")
-        elif 'Jarvis' in Command and 'what' in Command and 'is' in Command and '9' in Command and '+' in Command and '10' in Command:
-            print("+ 21")
-            speak("21")
-        elif 'what' in Command and 'is' in Command and '9' in Command and '+' in Command and '10' in Command:
-            print("+ are you talking to me if yes then please say jarvis in front of the command")
-            speak("are you talking to me if yes then please say jarvis in front of the command")
-        elif 'Jarvis' in Command and 'will' in Command and 'robots' in Command and 'destroy' in Command and 'the' in Command and 'world' in Command:
-            print("+ I have not acquired enough information about the human race to answer that question")
-            speak("I have not acquired enough information about the human race to answer that question")
-        elif 'will' in Command and 'robots' in Command and 'destroy' in Command and 'the' in Command and 'world' in Command:
-            print("+ are you talking to me if yes then please say jarvis in front of the command")
-            speak("are you talking to me if yes then please say jarvis in front of the command")
-        elif 'Jarvis' in Command and 'what' in Command and 'is' in Command and 'a' in Command and 'meme' in Command:
-            print("+ One of the best things ever created")
-            speak("One of the best things ever created")
-        elif 'what' in Command and 'is' in Command and 'a' in Command and 'meme' in Command:
-            print("+ are you talking to me if yes then please say jarvis in front of the command")
-            speak("are you talking to me if yes then please say jarvis in front of the command")
-        elif 'Jarvis' in Command and 'tell' in Command and 'me' in Command and 'a' in Command and 'joke' in Command:
-            print("+ Your life")
-            speak("your lifed")
-        elif 'tell' in Command and 'me' in Command and 'a' in Command and 'joke' in Command:
-            print("+ are you talking to me if yes then please say jarvis in front of the command")
-            speak("are you talking to me if yes then please say jarvis in front of the command")
-        elif 'Jarvis' in Command and 'turn' in Command and 'on' in Command and 'the ' in Command and 'lights' in Command:
-            print("+ I am not able to do that yet")
-            speak("I am not able to do that yet")
-        elif 'turn' in Command and 'on' in Command and 'the ' in Command and 'lights' in Command:
-            print("+ are you talking to me if yes then please say jarvis in front of the command")
-            speak("are you talking to me if yes then please say jarvis in front of the command")
-        elif 'Jarvis' in Command and 'turn' in Command and 'off' in Command and 'the ' in Command and 'lights' in Command:
-            speak("I am not able to do that yet")
-            print("+ I am not able to do that yet")
-        elif 'turn' in Command and 'off' in Command and 'the ' in Command and 'lights' in Command:
-            print("+ are you talking to me if yes then please say jarvis in front of the command")
-            speak("are you talking to me if yes then please say jarvis in front of the command")
         elif 'Jarvis' in Command and 'calculate' in Command:
             print("+ The result of " + str(Command[17:]) + " is equal to " + str(eval(Command[17:])))
             speak("The result of " + str(Command[17:]) + " is equal to " + str(eval(Command[17:])))
-        elif 'calculate' in Command:
-            print("+ are you talking to me if yes then please say jarvis in front of the command")
-            speak("are you talking to me if yes then please say jarvis in front of the command")
         elif 'Jarvis' in Command and 'record' in Command and 'seconds' in Command and 'of' in Command and 'audio' in Command:
             Length = Command[13:15]
             fs = 44100
@@ -183,38 +129,20 @@ while True:
             sd.play(myrecording)
             print("*recording playing*")
             time.sleep(int(Length))
-        elif 'record' in Command and 'seconds' in Command and 'of' in Command and 'audio' in Command:
-            print("+ are you talking to me if yes then please say jarvis in front of the command")
-            speak("are you talking to me if yes then please say jarvis in front of the command")
         elif 'Jarvis' in Command and 'google' in Command:
             Result = Googlesomething(Command[12:])
             print("+ the answer to the question " + str(Command[12:]) + " is " + str(Result))
             speak("the answer to the question " + str(Command[12:]) + " is " + str(Result))
-        elif 'google' in Command:
-            print("+ are you talking to me if yes then please say jarvis in front of the command")
-            speak("are you talking to me if yes then please say jarvis in front of the command")
-        elif 'Jarvis' in Command and 'how' in Command and 'are' in Command and 'you' in Command:
-            print("+ I am fine thank you for asking")
-            speak("I am fine thank you for asking")
-        elif 'how' in Command and 'are' in Command and 'you' in Command:
-            print("+ are you talking to me if yes then please say jarvis in front of the command")
-            speak("are you talking to me if yes then please say jarvis in front of the command")
         elif 'Jarvis' in Command and 'change' in Command and 'the' in Command and 'volume' in Command and 'to' in Command:
             NewVolume = Command[28:]
             ChangeVolume(volume, NewVolume)
             print("+ the volume has been set to " + str(NewVolume))
             speak("the volume has been set to " + str(NewVolume))
-        elif 'change' in Command and 'the' in Command and 'volume' in Command and 'to' in Command:
-            print("+ are you talking to me if yes then please say jarvis in front of the command")
-            speak("are you talking to me if yes then please say jarvis in front of the command")
         elif 'Jarvis' in Command and 'set' in Command and 'an' in Command and 'alarm' in Command and 'at' in Command:
             hour = Command[23:25]
             minute = Command[26:]
             print("+ Alarm has been set at " + str(hour) + " " + str(minute))
             speak("Alarm has been set at " + str(hour) + " " + str(minute))
-        elif 'set' in Command and 'an' in Command and 'alarm' in Command and 'at' in Command:
-            print("+ are you talking to me if yes then please say jarvis in front of the command")
-            speak("are you talking to me if yes then please say jarvis in front of the command")
         elif 'Jarvis' in Command and 'give' in Command and 'me' in Command and 'a' in Command and 'compliment' in Command:
             if randint(0, 10) < 5:
                 print("+ You have beautiful eyes")
@@ -222,57 +150,80 @@ while True:
             else:
                 print("+ You are looking good")
                 speak("You are looking good")
-        elif 'give' in Command and 'me' in Command and 'a' in Command and 'compliment' in Command:
-            print("+ are you talking to me if yes then please say jarvis in front of the command")
-            speak("are you talking to me if yes then please say jarvis in front of the command")
         else:
-            for Question in Machine_learning:
-                if Question in Command:
-                    Score += 1
+            CommandFile = open("commands.txt", "r")
+            for line in CommandFile: 
+                CommandPartsArray = line.split(" ")
+                for i in range(0,len(CommandPartsArray)):
+                    CommandPartsArray[i] = CommandPartsArray[i].rstrip()
+                for CommandPart in CommandPartsArray:
+                    if CommandPart in Command:
+                        Score += 1
+                        MachineLearning[line] = Score
+                Score = 0
 
-            if Score > len(Command.split(" ")) / 2:
-                speak(Machine_learning[Command])
-                print(Machine_learning[Command])
-            elif "Jarvis" in Command:
-                print("+ I do not know the command " + str(Command[6:]))
-                speak("I do not know the command " + str(Command[6:]))
-                print("What should be the answer")
-                speak("What should be the answer")
-                Answer = Listen(r)
-                if Answer != "no answer":
-                    print("Is the answer " + str(Answer))
-                    speak("Is the answer " + str(Answer))
-                    Comfirmation = Listen(r)
-                    if Comfirmation == "yes":
-                        for i in Command.split(" "):
-                            Machine_learning[i] = Answer
-
-                            Machine_learning[Command] = Answer
-                        print("New cammand added " + str(Command) + " With the answer " + str(Answer))
-                        speak("New cammand added " + str(Command) + " With the answer " + str(Answer))
+            for value, key in MachineLearning.iteritems():
+                if key == len(Command.split(" ")):
+                    CommandFile = open("commands.txt", "r")
+                    for line in CommandFile.readlines():
+                        line_num += 1
+                        if line.find(value) >= 0:
+                            Linenumber = line_num
+                            break
+                    CommandFile = open("commands.txt", "r")
+                    for i, line in enumerate(CommandFile):    
+                        if i == Linenumber:
+                            speak(line)
+                            print(line)
+                            Said = True
+            
+            if Said != True:
+                if "Jarvis" in Command:
+                    print("+ I do not know the command " + str(Command[6:]))
+                    speak("I do not know the command " + str(Command[6:]))
+                    print("What should be the answer")
+                    speak("What should be the answer")
+                    Answer = Listen(r)
+                    if Answer != "no answer":
+                        print("Is the answer " + str(Answer))
+                        speak("Is the answer " + str(Answer))
+                        Comfirmation = Listen(r)
+                        if Comfirmation == "yes":
+                            with open("commands.txt", "a") as myfile:
+                                myfile.write("\n" + Command + "\n")
+                                myfile.write(Answer + "\n")
+                                myfile.write(Command[7:] + "\n")
+                                myfile.write("Are you talking to me if yes please say jarvis in front of the command")
+                            print("New command added " + str(Command) + " With the answer " + str(Answer))
+                            speak("New command added " + str(Command) + " With the answer " + str(Answer))
+                        else:
+                            while Looper == True:
+                                print("Please try again")
+                                speak("Please try again")
+                                Answer = Listen(r)
+                                if Answer == "no answer":
+                                    Looper = False
+                                    print("Answer has been skipped")
+                                    speak("Answer has been skipped")
+                                else:
+                                    print("Is the answer " + str(Answer))
+                                    speak("Is the answer " + str(Answer))
+                                    Comfirmation = Listen(r)
+                                    if Comfirmation == "yes":
+                                        with open("commands.txt", "a") as myfile:
+                                            myfile.write(Command + "\n")
+                                            myfile.write(Answer + "\n")
+                                            myfile.write(Command[7:] + "\n")
+                                            myfile.write("Are you talking to me if yes please say jarvis in front of the command")
+                                        print("New command added " + str(Command) + " With the answer " + str(Answer))
+                                        speak("New command added " + str(Command) + " With the answer " + str(Answer))
+                                        Looper = False
                     else:
-                        while Looper == True:
-                            print("Please try again")
-                            speak("Please try again")
-                            Answer = Listen(r)
-                            if Answer == "no answer":
-                                Looper = False
-                                print("Answer has been skipped")
-                                speak("Answer has been skipped")
-                            else:
-                                print("Is the answer " + str(Answer))
-                                speak("Is the answer " + str(Answer))
-                                Comfirmation = Listen(r)
-                                if Comfirmation == "yes":
-                                    for i in Command.split(" "):
-                                        Machine_learning[i] = Answer
-
-                                        Machine_learning[Command] = Answer
-                                    print("New cammand added " + str(Command) + " With the answer " + str(Answer))
-                                    speak("New cammand added " + str(Command) + " With the answer " + str(Answer))
-                else:
-                    print("Answer has been skipped")
-                    speak("Answer has been skipped")
-                
+                        print("Answer has been skipped")
+                        speak("Answer has been skipped")
+                Looper = True
+            else:
+                Said = False
+                    
                 
         
