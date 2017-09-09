@@ -5,19 +5,13 @@ A python AI assistant. Uses SpeechRecognition module.
 # Dependencies
 To Make it work you will need to excecute these commands in cmd:
 
-pip install SpeechRecognition
-
-pip install pypiwin32
-
-pip install pyttsx
-
-pip install urllib2
-
-pip install comptypes
-
-pip install pycaw
-
-pip install Google-Search-API
+    pip install SpeechRecognition
+    pip install pypiwin32
+    pip install pyttsx
+    pip install urllib2
+    pip install comptypes
+    pip install pycaw
+    pip install Google-Search-API
 
 # Usage
 
