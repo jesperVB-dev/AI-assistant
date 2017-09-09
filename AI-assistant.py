@@ -8,11 +8,17 @@ from ctypes import cast, POINTER
 from comtypes import CLSCTX_ALL
 from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume
 from google import google
+import sounddevice as sd
+import time
 
+Looper = True
+Score = 0
 hour = 100
 minute = 100
+Machine_learning = {"hi": "hello"}
+Command_added = False
 
-Interface = str(raw_input())
+Interface = str(raw_input("Interface: "))
 
 devices = AudioUtilities.GetSpeakers()
 interface = devices.Activate(
@@ -102,10 +108,10 @@ while True:
         elif 'what' in Command and 'is' in Command and 'the' in Command and 'time' in Command:
             speak("are you talking to me if yes then please say jarvis in front of the command")
             print("+ are you talking to me if yes then please say jarvis in front of the command")
-        elif 'Jarvis' in Command and 'who' in Command and 'is' in Command and ('Jasper' in Command or 'Jesper' in Command):
+        elif 'Jarvis' in Command and 'who' in Command and 'is' in Command and ('Jasper' in Command or 'jesper' in Command):
             speak("Jesper is the most cool and beautiful person in this universe")
             print("+ Jesper is the most cool and beautiful person in this universe")
-        elif 'who' in Command and 'is' in Command and ('Jasper' in Command or 'Jesper' in Command):
+        elif 'who' in Command and 'is' in Command and ('Jasper' in Command or 'jesper' in Command):
             speak("are you talking to me if yes then please say jarvis in front of the command")
             print("+ are you talking to me if yes then please say jarvis in front of the command")
         elif 'Jarvis' in Command and 'who' in Command and 'is' in Command and 'Lisa' in Command:
@@ -162,6 +168,21 @@ while True:
         elif 'calculate' in Command:
             speak("are you talking to me if yes then please say jarvis in front of the command")
             print("+ are you talking to me if yes then please say jarvis in front of the command")
+        elif 'Jarvis' in Command and 'record' in Command and 'seconds' in Command and 'of' in Command and 'audio' in Command:
+            Length = Command[13:15]
+            fs = 44100
+            speak("Recording")
+            print("+ Recording")
+            myrecording = sd.rec(int(int(Length) * fs), samplerate=fs, channels=2)
+            time.sleep(int(Length))
+            speak("This is what i have recorded")
+            print("+ This is what i have recorded")
+            sd.play(myrecording)
+            print("*recording playing*")
+            time.sleep(int(Length))
+        elif 'record' in Command and 'seconds' in Command and 'of' in Command and 'audio' in Command:
+            speak("are you talking to me if yes then please say jarvis in front of the command")
+            print("+ are you talking to me if yes then please say jarvis in front of the command")
         elif 'Jarvis' in Command and 'google' in Command:
             Result = Googlesomething(Command[12:])
             speak("the answer to the question " + str(Command[12:]) + " is " + str(Result))
@@ -201,6 +222,52 @@ while True:
         elif 'give' in Command and 'me' in Command and 'a' in Command and 'compliment' in Command:
             speak("are you talking to me if yes then please say jarvis in front of the command")
             print("+ are you talking to me if yes then please say jarvis in front of the command")
-        elif "Jarvis" in Command:
-                speak("I do not know the command " + str(Command[4:]))
-                print("+ I do not know the command " + str(Command[4:]))
+        else:
+            for Question in Machine_learning:
+                if Question in Command:
+                    Score += 1
+
+            if Score > len(Command.split(" ")) / 2:
+                speak(Machine_learning[Command])
+                print(Machine_learning[Command])
+            elif "Jarvis" in Command:
+                speak("I do not know the command " + str(Command[6:]))
+                print("+ I do not know the command " + str(Command[6:]))
+                speak("What should be the answer")
+                print("What should be the answer")
+                Answer = Listen(r)
+                if Answer != "no answer":
+                    speak("Is the answer " + str(Answer))
+                    print("Is the answer " + str(Answer))
+                    Comfirmation = Listen(r)
+                    if Comfirmation == "yes":
+                        for i in Command.split(" "):
+                            Machine_learning[i] = Answer
+
+                            Machine_learning[Command] = Answer
+                        speak("New cammand added " + str(Command) + " With the answer " + str(Answer))
+                        print("New cammand added " + str(Command) + " With the answer " + str(Answer))
+                    else:
+                        while Looper == True:
+                            speak("Please try again")
+                            print("Please try again")
+                            Answer = Listen(r)
+                            if Answer == "no answer":
+                                Looper = False
+                                print "skipped"
+                            else:
+                                speak("Is the answer " + str(Answer))
+                                print("Is the answer " + str(Answer))
+                                Comfirmation = Listen(r)
+                                if Comfirmation == "yes":
+                                    for i in Command.split(" "):
+                                        Machine_learning[i] = Answer
+
+                                        Machine_learning[Command] = Answer
+                                    speak("New cammand added " + str(Command) + " With the answer " + str(Answer))
+                                    print("New cammand added " + str(Command) + " With the answer " + str(Answer))
+                else:
+                    print "skipped"
+                
+                
+        
