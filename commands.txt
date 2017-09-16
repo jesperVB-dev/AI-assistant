@@ -1,3 +1,5 @@
+new commands
+Are you talking to me if yes please say jarvis in front of the command
 how hot is it outside
 Are you talking to me if yes please say jarvis in front of the command
 what is the time
@@ -28,6 +30,8 @@ turn off the lights
 Are you talking to me if yes please say jarvis in front of the command
 how are you
 Are you talking to me if yes please say jarvis in front of the command
+turn on the TV
+Are you talking to me if yes please say jarvis in front of the command
 Jarvis who is jesper
 Jesper is the most cool and beautiful person in this universe
 Jarvis how are you
@@ -50,5 +54,7 @@ Jarvis who is Lisa
 She is the sister of Jesper nobody cares about her
 Jarvis turn on the TV
 TV has been turned on
-turn on the TV
+Jarvis turn on the printer
+the printer has been done.
+turn on the printer
 Are you talking to me if yes please say jarvis in front of the command
