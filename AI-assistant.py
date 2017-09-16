@@ -97,7 +97,7 @@ def CheckAlarm():
         for j in range(0,11):
             speak("alarm")
 
-def AnswerCommand(CommandRecognised, line_num):
+def AnswerCommand(CommandRecognised, line_num, Score, r, Command):
     CommandFile = open("commands.txt", "r")
     for line in CommandFile.readlines():
         line_num += 1
@@ -108,13 +108,81 @@ def AnswerCommand(CommandRecognised, line_num):
     CommandFile = open("commands.txt", "r")
     for i, line in enumerate(CommandFile):    
         if i == Linenumber:
+            Answer = line
             speak(line)
             print("+ " + str(line))
+            MachineLearning = defaultdict(list)
+
+    print len(Command.split(" "))/2
+    print Score
+    
+    if len(Command.split(" "))/2 > Score:
+        print("+ Is this answer correct")
+        speak("Is this answer correct")
+        Comfirmmation = Listen(r)
+        if "yes" in Comfirmmation:
+            with open("commands.txt", "a") as myfile:
+                myfile.write(CommandRecognised + "\n")
+                myfile.write(Answer + "\n")
+                myfile.write(CommandRecognised[7:] + "\n")
+                myfile.write("Are you talking to me if yes please say jarvis in front of the command")
+            print("New command added " + str(Command) + " With the answer " + str(Answer))
+            speak("New command added " + str(Command) + " With the answer " + str(Answer))
+        else:
+            print("+ Do you want me to make a new command of it")
+            speak("Do you want me to make a new command of it")
+            Comfirmmation = Listen(r)
+            if "yes" in Comfirmmation:
+                Answer = Listen(r)
+                print("+ Is the answer to the new Command " + str(Command) + " " + str(Answer))
+                speak("Is the answer to the new Command " + str(Command) + " " + str(Answer))
+                Comfirmation = Listen(r)
+
+                if 'yes' in Comfirmation:
+                    with open("commands.txt", "a") as myfile:
+                        myfile.write(Command + "\n")
+                        myfile.write(Answer + "\n")
+                        myfile.write(Command[7:] + "\n")
+                        myfile.write("Are you talking to me if yes please say jarvis in front of the command")
+                    print("New command added " + str(Command) + " With the answer " + str(Answer))
+                    speak("New command added " + str(Command) + " With the answer " + str(Answer))
+                    Looper = True
+                elif 'no answer' in Comfirmation:
+                    print("Answer has been skipped")
+                    speak("Answer has been skipped")
+                    Looper = True
+                else:
+                    while Looper == True:
+                        print("Please try again")
+                        speak("Please try again")
+                        Answer = Listen(r)
+                        if "no answer" in Answer:
+                            print("Answer has been skipped")
+                            speak("Answer has been skipped")
+                            Looper = False
+                        else:
+                            print("+ Is the answer to the new Command " + str(Command) + " " + str(Answer))
+                            speak("Is the answer to the new Command " + str(Command) + " " + str(Answer))
+                            Comfirmation = Listen(r)
+                            if Comfirmation == "yes":
+                                with open("commands.txt", "a") as myfile:
+                                    myfile.write(Command + "\n")
+                                    myfile.write(Answer + "\n")
+                                    myfile.write(Command[7:] + "\n")
+                                    myfile.write("Are you talking to me if yes please say jarvis in front of the command")
+                                print("New command added " + str(Command) + " With the answer " + str(Answer))
+                                speak("New command added " + str(Command) + " With the answer " + str(Answer))
+                                Looper = False
+                            elif "no answer" in Answer:
+                                print("Answer has been skipped")
+                                speak("Answer has been skipped")
+                                Looper = False
             
 print("+ Ready for action sir")
 speak("Ready for action sir")
 
 while True:
+    MachineLearning = defaultdict(list)
     CheckAlarm()
     
     if Interface == "Voice":
@@ -203,13 +271,14 @@ while True:
                                 myfile.write(Answer + "\n")
                                 myfile.write(Command[7:] + "\n")
                                 myfile.write("Are you talking to me if yes please say jarvis in front of the command")
-                            print("New command added " + str(Command) + " With the answer " + str(Answer))
-                            speak("New command added " + str(Command) + " With the answer " + str(Answer))
+                            print("New command added " + str(NewCommand) + " With the answer " + str(Answer))
+                            speak("New command added " + str(NewCommand) + " With the answer " + str(Answer))
                             Looper = False
                         elif "no answer" in Answer:
                             print("Answer has been skipped")
                             speak("Answer has been skipped")
                             Looper = False
+                            
         elif 'Jarvis' in Command and 'set' in Command and 'an' in Command and 'alarm' in Command and 'at' in Command:
             hour = Command[23:25]
             minute = Command[26:]
@@ -227,8 +296,8 @@ while True:
             for line in CommandFile:
                 line = line.rstrip()
                 if NextLine == True:
+                    print("+ " + str(line))
                     speak(line)
-                    print(line)
                     NextLine = False
                     ScoreIndexes = False
                     break
@@ -254,7 +323,7 @@ while True:
                         CommandRecognised = Commands[-1]
                         if "Jarvis" in Command and "Jarvis" in CommandRecognised:
                             print "+ I think you said " + str(CommandRecognised)
-                            AnswerCommand(CommandRecognised, line_num)
+                            AnswerCommand(CommandRecognised, line_num, i, r, Command)
                             break
                     
             else:
