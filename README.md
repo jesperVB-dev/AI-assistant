@@ -13,6 +13,12 @@ To Make it work you will need to excecute these commands in cmd:
     pip install pycaw
     pip install Google-Search-API
 
+# Things to setup
+
+1)
+    - Create a folder "tracks" in the same directory as your python script
+    - Put all of you music inside that folder
+    
 # Usage
 
 1) You run the AI-assistant.py script.
