@@ -11,6 +11,8 @@ from google import google
 import sounddevice as sd
 import time
 from collections import defaultdict
+import pygame
+import os
 
 Looper = True
 NextLine = False
@@ -22,9 +24,10 @@ Linenumber = 0
 line_num = 0
 Said = False
 ScoreIndexes = True
+Loopme = True
 
 #Interface = str(raw_input("Interface: "))
-Interface = "Voice"
+Interface = "Keyboard"
 
 devices = AudioUtilities.GetSpeakers()
 interface = devices.Activate(
@@ -137,7 +140,6 @@ def AnswerCommand(CommandRecognised, line_num, Score, r, Command):
                 print("+ Is the answer to the new Command " + str(Command) + " " + str(Answer))
                 speak("Is the answer to the new Command " + str(Command) + " " + str(Answer))
                 Comfirmation = Listen(r)
-
                 if 'yes' in Comfirmation:
                     with open("commands.txt", "a") as myfile:
                         myfile.write(Command + "\n")
@@ -177,9 +179,49 @@ def AnswerCommand(CommandRecognised, line_num, Score, r, Command):
                                 print("Answer has been skipped")
                                 speak("Answer has been skipped")
                                 Looper = False
-            
+
+def PlayMusic(Loopme):
+    root, dirs, files = next(os.walk('tracks/'))
+    
+    pygame.mixer.init()
+    
+    for name in files:
+        name = 'tracks/'+str(name)
+        pygame.mixer.music.load(name)
+        pygame.mixer.music.play(0)
+        while pygame.mixer.music.get_busy() and Loopme == True:
+            Loopquestion = Listen(r)
+            print "-" + str(Loopquestion)
+            if Loopquestion == "Jarvis stop the music":
+                PauseMusic()
+                Loopme == False
+            pygame.time.Clock().tick(5)
+        Loopme = True
+        return
+    
+
+def StopMusic():
+    pygame.mixer.music.stop()
+
+def PauseMusic():
+    pygame.mixer.music.pause()
+
+def ResumeMusic(Loopme):
+    pygame.mixer.music.play
+    while pygame.mixer.music.get_busy() and Loopme == True:
+        Loopquestion = Listen(r)
+        print "-" + str(Loopquestion)
+        if Loopquestion == "Jarvis stop the music":
+            PauseMusic()
+            Loopme == False
+        pygame.time.Clock().tick(5)
+    Loopme = True
+    return
+        
+
 print("+ Ready for action sir")
 speak("Ready for action sir")
+
 
 while True:
     MachineLearning = defaultdict(list)
@@ -195,6 +237,18 @@ while True:
         if 'Jarvis' in Command and 'how' in Command and 'hot' in Command and 'is' in Command and 'it' in Command and 'outside' in Command:
             print("+ It is " + str(Getweather()) + " degrees outside")
             speak("It is " + str(Getweather()) + " degrees outside")
+        elif 'Jarvis' in Command and 'play' in Command and 'some' in Command and 'music' in Command:
+            print("+ Playing Music")
+            speak("Playing Music")
+            PlayMusic(Loopme)
+        elif 'Jarvis' in Command and 'pause' in Command and 'the' in Command and 'music' in Command:
+            print("+ Pausing Music")
+            speak("Pausing Music")
+            PauseMusic()
+        elif 'Jarvis' in Command and 'resume' in Command and 'the' in Command and 'music' in Command:
+            print("+ resuming Music")
+            speak("resuming Music")
+            ResumeMusic()
         elif 'Jarvis' in Command and 'what' in Command and 'is' in Command and 'the' in Command and 'time' in Command:
             print("+ " + str(Gettime()))
             speak(Gettime())
