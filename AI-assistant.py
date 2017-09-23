@@ -37,8 +37,8 @@ speech_engine = pyttsx.init('sapi5') # see http://pyttsx.readthedocs.org/en/late
 speech_engine.setProperty('rate', 150)
 
 def speak(text):
-	speech_engine.say(text)
-	speech_engine.runAndWait()
+    speech_engine.say(text)
+    speech_engine.runAndWait()
  
 # get audio from the microphone                                                                       
 r = sr.Recognizer()
@@ -107,7 +107,7 @@ def RecordAudio(Length):
     print("*recording playing*")
     time.sleep(int(Length))
     
-def PlayMusic(Loopme):
+def PlayMusic():
     root, dirs, files = next(os.walk('tracks/'))
     
     pygame.mixer.init()
@@ -116,15 +116,17 @@ def PlayMusic(Loopme):
         name = 'tracks/'+str(name)
         pygame.mixer.music.load(name)
         pygame.mixer.music.play(0)
-        while pygame.mixer.music.get_busy() and Loopme == True:
-            Loopquestion = Listen(r)
-            print "-" + str(Loopquestion)
-            if Loopquestion == "Jarvis stop the music":
-                PauseMusic()
-                Loopme == False
+        while pygame.mixer.music.get_busy():
+            if Interface == "Voice":
+                print "Listening"
+                Command = Listen(r)
+                print "-" + str(Command)
+                KnownCommands(Command, r, NextLine, ScoreIndexes, Score)  
+            else:
+                Command = str(raw_input("Command: "))
+                print "-" + str(Command)
+                KnownCommands(Command, r, NextLine, ScoreIndexes, Score)
             pygame.time.Clock().tick(5)
-        Loopme = True
-        return
     
 
 def StopMusic():
@@ -135,15 +137,17 @@ def PauseMusic():
 
 def ResumeMusic(Loopme):
     pygame.mixer.music.play
-    while pygame.mixer.music.get_busy() and Loopme == True:
-        Loopquestion = Listen(r)
-        print "-" + str(Loopquestion)
-        if Loopquestion == "Jarvis stop the music":
-            PauseMusic()
-            Loopme == False
+    while pygame.mixer.music.get_busy():
+        if Interface == "Voice":
+            print "Listening"
+            Command = Listen(r)
+            print "-" + str(Command)
+            KnownCommands(Command, r, NextLine, ScoreIndexes, Score)  
+        else:
+            Command = str(raw_input("Command: "))
+            print "-" + str(Command)
+            KnownCommands(Command, r, NextLine, ScoreIndexes, Score)
         pygame.time.Clock().tick(5)
-    Loopme = True
-    return
 
 def CheckAlarm():
     if hour == datetime.now().strftime('%H') and minute == datetime.now().strftime('%M'):
@@ -155,12 +159,23 @@ def NewCommand(Type):
     if Type == "Asked":
         print("+ Sure what will be the command and what the answer")
         speak("Sure what will be the command and what the answer")
-        CommandAnswer = Listen(r)
-        print CommandAnswer
+        
+        if Interface == "Voice":
+            CommandAnswer = Listen(r)
+            print "-" + str(CommandAnswer)
+        else:
+            CommandAnswer = str(raw_input("{command} with the answer {answer}: "))
+            print "-" + str(CommandAnswer)
+            
         while ' with the answer ' not in CommandAnswer:
             print("+ please start the answer to the command with 'with the answer'")
             speak("please start the answer to the command with quote with the answer")
-            CommandAnswer = Listen(r)
+            if Interface == "Voice":
+                CommandAnswer = Listen(r)
+                print "-" + str(CommandAnswer)
+            else:
+                CommandAnswer = str(raw_input("{command} with the answer {answer}: "))
+                print "-" + str(CommandAnswer)
         
         Command = CommandAnswer.split(" with the answer ")[0]
         Answer = CommandAnswer.split(" with the answer ")[1]
@@ -169,17 +184,23 @@ def NewCommand(Type):
         
     print("+ Is the answer to the Command " + str(Command) + " " + str(Answer))
     speak("Is the answer to the Command " + str(Command) + " " + str(Answer))
-    Comfirmation = Listen(r)
+
+    if Interface == "Voice":
+        Comfirmation = Listen(r)
+        print "-" + str(Comfirmation)
+    else:
+        Comfirmation = str(raw_input("Comfirmation, yes or no: "))
+        print "-" + str(Comfirmation)
 
     if 'yes' in Comfirmation:
         with open("commands.txt", "a") as myfile:
             myfile.write(Command + "\n")
             myfile.write(Answer + "\n")
-            myfile.write(Command[7:] + "\n")
-            myfile.write("Are you talking to me if yes please say jarvis in front of the command")
+
         print("New command added " + str(Command) + " With the answer " + str(Answer))
         speak("New command added " + str(Command) + " With the answer " + str(Answer))
         Looper = True
+        
     elif 'no answer' in Comfirmation:
         print("Answer has been skipped")
         speak("Answer has been skipped")
@@ -188,7 +209,14 @@ def NewCommand(Type):
         while Looper == True:
             print("Please try again")
             speak("Please try again")
-            Answer = Listen(r)
+            
+            if Interface == "Voice":
+                Answer = Listen(r)
+                print "-" + str(Answer)
+            else:
+                Answer = str(raw_input("Please type the anser to the command: "))
+                print "-" + str(Answer)
+                
             if "no answer" in Answer:
                 print("Answer has been skipped")
                 speak("Answer has been skipped")
@@ -196,13 +224,18 @@ def NewCommand(Type):
             else:
                 print("+ Is the answer to the Command " + str(Command) + " " + str(Answer))
                 speak("Is the answer to the Command " + str(Command) + " " + str(Answer))
-                Comfirmation = Listen(r)
+                if Interface == "Voice":
+                    Comfirmation = Listen(r)
+                    print "-" + str(Comfirmation)
+                else:
+                    Comfirmation = str(raw_input("Comfirmation, yes or no: "))
+                    print "-" + str(Comfirmation)
+                    
                 if Comfirmation == "yes":
                     with open("commands.txt", "a") as myfile:
                         myfile.write(Command + "\n")
                         myfile.write(Answer + "\n")
-                        myfile.write(Command[7:] + "\n")
-                        myfile.write("Are you talking to me if yes please say jarvis in front of the command")
+                        
                     print("New command added " + str(Command) + " With the answer " + str(Answer))
                     speak("New command added " + str(Command) + " With the answer " + str(Answer))
                     Looper = False
@@ -212,6 +245,7 @@ def NewCommand(Type):
                     Looper = False
 
 def AnswerCommand(CommandRecognised, line_num, Score, r, Command):
+    MachineLearning = defaultdict(list)
     CommandFile = open("commands.txt", "r")
     for line in CommandFile.readlines():
         line_num += 1
@@ -226,29 +260,46 @@ def AnswerCommand(CommandRecognised, line_num, Score, r, Command):
             speak(line)
             print("+ " + str(line))
             MachineLearning = defaultdict(list)
-    
-    if len(Command.split(" "))/2 > Score:
+            
+    if len(Command.split(" "))/1.5 > Score:
         print("+ Is this answer correct")
         speak("Is this answer correct")
-        Comfirmmation = Listen(r)
+        if Interface == "Voice":
+            Comfirmmation = Listen(r)
+            print "-" + str(Comfirmmation)
+        else:
+            Comfirmmation = str(raw_input("Comfirmation, yes or no: "))
+            print "-" + str(Comfirmmation)
+            
         if "yes" in Comfirmmation:
             with open("commands.txt", "a") as myfile:
-                myfile.write(CommandRecognised + "\n")
+                myfile.write(Command + "\n")
                 myfile.write(Answer + "\n")
-                myfile.write(CommandRecognised[7:] + "\n")
-                myfile.write("Are you talking to me if yes please say jarvis in front of the command")
+                
             print("New command added " + str(Command) + " With the answer " + str(Answer))
             speak("New command added " + str(Command) + " With the answer " + str(Answer))
         else:
             print("+ Do you want me to make a new command of it")
             speak("Do you want me to make a new command of it")
-            Comfirmmation = Listen(r)
+            if Interface == "Voice":
+                Comfirmation = Listen(r)
+                print "-" + str(Comfirmation)
+            else:
+                Comfirmation = str(raw_input("Comfirmation, yes or no: "))
+                print "-" + str(Comfirmation)
+                
             if "yes" in Comfirmmation:
                 NewCommand(Command)
             else:
                 print("+ Well i am not always correct")
                 speak("Well i am not always correct")
+    Score = 0
+
+    return
+
 def TryToRecognise(NextLine, ScoreIndexes, Score, Command):
+    MachineLearning = defaultdict(list)
+    Score = 0
     CommandFile = open("commands.txt", "r")
     for line in CommandFile:
         line = line.rstrip()
@@ -287,6 +338,7 @@ def TryToRecognise(NextLine, ScoreIndexes, Score, Command):
         ScoreIndexes = True
         
 def KnownCommands(Command, r, NextLine, ScoreIndexes, Score):
+    MachineLearning = defaultdict(list)
     if Command != None:
         if 'Jarvis' in Command and 'how' in Command and 'hot' in Command and 'is' in Command and 'it' in Command and 'outside' in Command:
             print("+ It is " + str(Getweather()) + " degrees outside")
@@ -294,7 +346,7 @@ def KnownCommands(Command, r, NextLine, ScoreIndexes, Score):
         elif 'Jarvis' in Command and 'play' in Command and 'some' in Command and 'music' in Command:
             print("+ Playing Music")
             speak("Playing Music")
-            PlayMusic(Loopme)
+            PlayMusic()
         elif 'Jarvis' in Command and 'pause' in Command and 'the' in Command and 'music' in Command:
             print("+ Pausing Music")
             speak("Pausing Music")
@@ -350,10 +402,18 @@ def main():
         if Interface == "Voice":
             Command = Listen(r)
             print "- " + str(Command)
-            KnownCommands(Command, r, NextLine, ScoreIndexes, Score)    
+            if 'Jarvis' not in Command:
+                print("Are you talking to me if yes please say jarvis in front of the command")
+                speak("Are you talking to me if yes please say jarvis in front of the command")
+            else:
+                KnownCommands(Command, r, NextLine, ScoreIndexes, Score)    
         else:
             Command = str(raw_input("Command: "))
-            KnownCommands(Command, r, NextLine, ScoreIndexes, Score)
+            if 'Jarvis' not in Command:
+                print("Are you talking to me if yes please say jarvis in front of the command")
+                speak("Are you talking to me if yes please say jarvis in front of the command")
+            else:
+                KnownCommands(Command, r, NextLine, ScoreIndexes, Score)   
 
 if __name__ == "__main__":
     main()
