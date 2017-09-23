@@ -13,18 +13,30 @@ import time
 from collections import defaultdict
 import pygame
 import os
+import unicodedata
 
 Looper = True
 NextLine = False
-Score = 0
 hour = 100
 minute = 100
-MachineLearning = defaultdict(list)
 Linenumber = 0
 line_num = 0
-Said = False
 ScoreIndexes = True
 Loopme = True
+ScoreDesision = []
+HighestScore = 0
+HighestScoreLine = ""
+HighestScoreCoreLineLength = ""
+CommonWords = [" is"," the", " and", " i", " at", " when", " who", " what", " you", " your"]
+TotScore = 0
+SuffScore = 0
+CoreScore = 0
+LineLength = 0
+CoreLineLength = 0
+OddEven = 1
+HighestScore = 0
+HighestScoreLine = ""
+HighestScoreCoreLineLength = ""
 
 #Interface = str(raw_input("Interface: "))
 Interface = "Keyboard"
@@ -83,13 +95,11 @@ def ChangeVolume(volume, Volume):
         volume.SetMasterVolumeLevel(-60.0, None)
 
 def Googlesomething(Query):
-    num_page = 1
-    Result = []
-    search_results = google.search(Query, 1)
-    for result in search_results:
-        Result.append(result.name)
-
-    return Result[0]
+	search_result = google.search(Query, 1)
+        result = search_result[0].name
+        unicodedata.normalize('NFKD', result).encode('ascii','ignore')
+        print("+ the answer to the question " + str(Query) + " is " + str(result))
+        speak("the answer to the question " + str(Query) + " is " + str(result))
 
 def Calculate(Query):
     return eval(Query)
@@ -121,11 +131,11 @@ def PlayMusic():
                 print "Listening"
                 Command = Listen(r)
                 print "-" + str(Command)
-                KnownCommands(Command, r, NextLine, ScoreIndexes, Score)  
+                KnownCommands(Command, r, NextLine, ScoreIndexes)  
             else:
                 Command = str(raw_input("Command: "))
                 print "-" + str(Command)
-                KnownCommands(Command, r, NextLine, ScoreIndexes, Score)
+                KnownCommands(Command, r, NextLine, ScoreIndexes)
             pygame.time.Clock().tick(5)
     
 
@@ -142,11 +152,11 @@ def ResumeMusic(Loopme):
             print "Listening"
             Command = Listen(r)
             print "-" + str(Command)
-            KnownCommands(Command, r, NextLine, ScoreIndexes, Score)  
+            KnownCommands(Command, r, NextLine, ScoreIndexes)  
         else:
             Command = str(raw_input("Command: "))
             print "-" + str(Command)
-            KnownCommands(Command, r, NextLine, ScoreIndexes, Score)
+            KnownCommands(Command, r, NextLine, ScoreIndexes)
         pygame.time.Clock().tick(5)
 
 def CheckAlarm():
@@ -244,14 +254,13 @@ def NewCommand(Type):
                     speak("Answer has been skipped")
                     Looper = False
 
-def AnswerCommand(CommandRecognised, line_num, Score, r, Command):
-    MachineLearning = defaultdict(list)
+def LineToAnswer(Command, line_num, Linenumber):
+    Command= Command[7:]
     CommandFile = open("commands.txt", "r")
     for line in CommandFile.readlines():
         line_num += 1
-        if line.find(CommandRecognised) >= 0:
+        if line.find(Command) >= 0:
             Linenumber = line_num
-            break
         
     CommandFile = open("commands.txt", "r")
     for i, line in enumerate(CommandFile):    
@@ -259,47 +268,57 @@ def AnswerCommand(CommandRecognised, line_num, Score, r, Command):
             Answer = line
             speak(line)
             print("+ " + str(line))
-            MachineLearning = defaultdict(list)
-            
-    if len(Command.split(" "))/1.5 > Score:
-        print("+ Is this answer correct")
-        speak("Is this answer correct")
+            break
+        
+    return Answer
+    
+def AnswerCommand(HighestScore,line_num,r,Command, Linenumber, ScoreDesision):
+    for i in ScoreDesision:
+        line = i[0]
+        CoreLineLength = i[1]
+        CoreScore = i[2]
+
+        LineLength = len(line.split(" "))
+        
+        if CoreScore > HighestScore:
+            HighestScore = CoreScore
+            HighestScoreLine = line
+            HighestScoreLineLength = LineLength
+            HighestScoreCoreLineLength = CoreLineLength
+
+    #print HighestScoreCoreLineLength
+    #print HighestScoreCoreLineLength/1.62
+    #print HighestScore
+    #print HighestScoreCoreLineLength/1.62 > HighestScore
+
+    if HighestScoreCoreLineLength/1.62 > HighestScore or HighestScoreLineLength/2 > HighestScore:
+        print "+ I think you said " + str(HighestScoreLine)
+        Answer = LineToAnswer(HighestScoreLine, line_num, Linenumber)
+        print("+ is this answer correct")
+        speak("is this answer correct")
         if Interface == "Voice":
-            Comfirmmation = Listen(r)
-            print "-" + str(Comfirmmation)
+            Comfirmation = Listen(r)
+            print "-" + str(Comfirmation)
         else:
-            Comfirmmation = str(raw_input("Comfirmation, yes or no: "))
-            print "-" + str(Comfirmmation)
-            
-        if "yes" in Comfirmmation:
+            Comfirmation = str(raw_input("Comfirmation, yes or no: "))
+            print "-" + str(Comfirmation)
+
+        if 'yes' in Comfirmation:
             with open("commands.txt", "a") as myfile:
                 myfile.write(Command + "\n")
                 myfile.write(Answer + "\n")
-                
+
             print("New command added " + str(Command) + " With the answer " + str(Answer))
             speak("New command added " + str(Command) + " With the answer " + str(Answer))
         else:
-            print("+ Do you want me to make a new command of it")
-            speak("Do you want me to make a new command of it")
-            if Interface == "Voice":
-                Comfirmation = Listen(r)
-                print "-" + str(Comfirmation)
-            else:
-                Comfirmation = str(raw_input("Comfirmation, yes or no: "))
-                print "-" + str(Comfirmation)
+            print("+ I cannot always be correct")
+            speak("I cannot always be correct")
+    else:
+        print "+ I think you said " + str(HighestScoreLine)
+        LineToAnswer(HighestScoreLine, line_num, Linenumber)
                 
-            if "yes" in Comfirmmation:
-                NewCommand(Command)
-            else:
-                print("+ Well i am not always correct")
-                speak("Well i am not always correct")
-    Score = 0
-
-    return
-
-def TryToRecognise(NextLine, ScoreIndexes, Score, Command):
-    MachineLearning = defaultdict(list)
-    Score = 0
+def TryToRecognise(ScoreDesision,HighestScore,NextLine, ScoreIndexes, line_num, r, Command, OddEven, CommonWords,CoreCommand, CoreScore, Linenumber):
+    ScoreDesision = []
     CommandFile = open("commands.txt", "r")
     for line in CommandFile:
         line = line.rstrip()
@@ -314,73 +333,72 @@ def TryToRecognise(NextLine, ScoreIndexes, Score, Command):
                     
     if ScoreIndexes == True:
         CommandFile = open("commands.txt", "r")
-        for lines in CommandFile:
-            for lines in CommandFile:
-                lines = lines.rstrip()
-                CommandParts = lines.split(" ")
-                CommandParts.append(lines)
-                for i in CommandParts:
-                    if i in Command:
-                        Score += 1
-                    MachineLearning[Score].append(CommandParts)
-                Score = 0
-        for i in range(len(Command)+1,0,-1):
-            if MachineLearning.get(i) != None:
-                Commands = MachineLearning.get(i)
-                Commands = Commands[0]
-                CommandRecognised = Commands[-1]
-                if "Jarvis" in Command and "Jarvis" in CommandRecognised:
-                    print "+ I think you said " + str(CommandRecognised)
-                    AnswerCommand(CommandRecognised, line_num, i, r, Command)
-                    break
-            
+        for line in CommandFile:
+            if OddEven == 1:
+                line = line.rstrip()
+                line = line.lower()
+                CoreLine = line
+                 
+                for CommonWord in CommonWords:
+                    CoreCommand = CoreCommand.split(CommonWord)
+                    CoreCommand = ''.join(CoreCommand)
+                    CoreCommandLength = len(CoreCommand.split(" "))
+                            
+                CoreCommandParts = CoreLine.split(" ")
+                CoreCommandParts.append(CoreLine)
+                for i in CoreCommandParts:
+                    if i in CoreCommand:
+                        CoreScore += 1  
+                ScoreDesision.append([line, CoreCommandLength, CoreScore])
+                CoreScore = 0
+                OddEven = 0
+            else:
+                OddEven = 1
+        AnswerCommand(HighestScore,line_num, r, Command, Linenumber, ScoreDesision)
     else:
         ScoreIndexes = True
         
-def KnownCommands(Command, r, NextLine, ScoreIndexes, Score):
-    MachineLearning = defaultdict(list)
+def KnownCommands(Command, r, NextLine, ScoreIndexes, CoreCommand, ScoreDesision):
     if Command != None:
-        if 'Jarvis' in Command and 'how' in Command and 'hot' in Command and 'is' in Command and 'it' in Command and 'outside' in Command:
+        if 'jarvis' in Command and 'how' in Command and 'hot' in Command and 'is' in Command and 'it' in Command and 'outside' in Command:
             print("+ It is " + str(Getweather()) + " degrees outside")
             speak("It is " + str(Getweather()) + " degrees outside")
-        elif 'Jarvis' in Command and 'play' in Command and 'some' in Command and 'music' in Command:
+        elif 'jarvis' in Command and 'play' in Command and 'some' in Command and 'music' in Command:
             print("+ Playing Music")
             speak("Playing Music")
             PlayMusic()
-        elif 'Jarvis' in Command and 'pause' in Command and 'the' in Command and 'music' in Command:
+        elif 'jarvis' in Command and 'pause' in Command and 'the' in Command and 'music' in Command:
             print("+ Pausing Music")
             speak("Pausing Music")
             PauseMusic()
-        elif 'Jarvis' in Command and 'resume' in Command and 'the' in Command and 'music' in Command:
+        elif 'jarvis' in Command and 'resume' in Command and 'the' in Command and 'music' in Command:
             print("+ resuming Music")
             speak("resuming Music")
             ResumeMusic()
-        elif 'Jarvis' in Command and 'what' in Command and 'is' in Command and 'the' in Command and 'time' in Command:
+        elif 'jarvis' in Command and 'what' in Command and 'is' in Command and 'the' in Command and 'time' in Command:
             print("+ " + str(Gettime()))
             speak(Gettime())
-        elif 'Jarvis' in Command and 'calculate' in Command:
+        elif 'jarvis' in Command and 'calculate' in Command:
             print("+ The result of " + str(Command[17:]) + " is equal to " + str(eval(Command[17:])))
             speak("The result of " + str(Command[17:]) + " is equal to " + str(eval(Command[17:])))
-        elif 'Jarvis' in Command and 'record' in Command and 'seconds' in Command and 'of' in Command and 'audio' in Command:
+        elif 'jarvis' in Command and 'record' in Command and 'seconds' in Command and 'of' in Command and 'audio' in Command:
             Length = Command[13:16]
             RecordAudio(Length)
-        elif 'Jarvis' in Command and ('google' in Command or 'Google' in Command):
-            Result = Googlesomething(Command[12:])
-            print("+ the answer to the question " + str(Command[12:]) + " is " + str(Result))
-            speak("the answer to the question " + str(Command[12:]) + " is " + str(Result))
-        elif 'Jarvis' in Command and 'change' in Command and 'the' in Command and 'volume' in Command and 'to' in Command:
+        elif 'jarvis' in Command and ('google' in Command or 'google' in Command):
+            Googlesomething(Command[14:])
+        elif 'jarvis' in Command and 'change' in Command and 'the' in Command and 'volume' in Command and 'to' in Command:
             NewVolume = Command[28:]
             ChangeVolume(volume, NewVolume)
             print("+ the volume has been set to " + str(NewVolume))
             speak("the volume has been set to " + str(NewVolume))
-        elif 'Jarvis' in Command and 'new' in Command and 'commands' in Command:
+        elif 'jarvis' in Command and 'new' in Command and 'commands' in Command:
             NewCommand("Asked")             
-        elif 'Jarvis' in Command and 'set' in Command and 'an' in Command and 'alarm' in Command and 'at' in Command:
+        elif 'jarvis' in Command and 'set' in Command and 'an' in Command and 'alarm' in Command and 'at' in Command:
             hour = Command[23:25]
             minute = Command[26:]
             print("+ Alarm has been set at " + str(hour) + " " + str(minute))
             speak("Alarm has been set at " + str(hour) + " " + str(minute))
-        elif 'Jarvis' in Command and 'give' in Command and 'me' in Command and 'a' in Command and 'compliment' in Command:
+        elif 'jarvis' in Command and 'give' in Command and 'me' in Command and 'a' in Command and 'compliment' in Command:
             if randint(0, 10) < 5:
                 print("+ You have beautiful eyes")
                 speak("You have beautiful eyes")
@@ -388,12 +406,11 @@ def KnownCommands(Command, r, NextLine, ScoreIndexes, Score):
                 print("+ You are looking good")
                 speak("You are looking good")
         else:
-            TryToRecognise(NextLine, ScoreIndexes, Score, Command)
+            TryToRecognise(ScoreDesision,HighestScore,NextLine, ScoreIndexes, line_num, r, Command, OddEven, CommonWords,CoreCommand, CoreScore, Linenumber)
 
 def main():
     print("+ Ready for action sir")
     speak("Ready for action sir")
-
 
     while True:
         MachineLearning = defaultdict(list)
@@ -406,14 +423,18 @@ def main():
                 print("Are you talking to me if yes please say jarvis in front of the command")
                 speak("Are you talking to me if yes please say jarvis in front of the command")
             else:
-                KnownCommands(Command, r, NextLine, ScoreIndexes, Score)    
+                Command = Command.lower()
+                CoreCommand = Command
+                KnownCommands(Command, r, NextLine, ScoreIndexes, CoreCommand,ScoreDesision)    
         else:
             Command = str(raw_input("Command: "))
             if 'Jarvis' not in Command:
                 print("Are you talking to me if yes please say jarvis in front of the command")
                 speak("Are you talking to me if yes please say jarvis in front of the command")
             else:
-                KnownCommands(Command, r, NextLine, ScoreIndexes, Score)   
+                Command = Command.lower()
+                CoreCommand = Command
+                KnownCommands(Command, r, NextLine, ScoreIndexes, CoreCommand,ScoreDesision)   
 
 if __name__ == "__main__":
     main()
