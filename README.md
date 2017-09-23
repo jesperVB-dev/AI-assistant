@@ -12,6 +12,7 @@ To Make it work you will need to excecute these commands in cmd:
     pip install comptypes
     pip install pycaw
     pip install Google-Search-API
+    pip install pygame
 
 # Things to setup
 
